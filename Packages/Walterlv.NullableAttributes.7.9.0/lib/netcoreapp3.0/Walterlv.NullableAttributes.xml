@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Walterlv.NullableAttributes</name>
+    </assembly>
+    <members>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
+            <summary>
+            调用了此方法后，即可保证列表中所列出的字段和属性成员将不会为 null。
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String)">
+            <summary>
+            指定调用了此方法后，所列出的字段和属性成员将不会为 null。
+            </summary>
+            <param name="member">
+            将保证不会为 null 的字段或属性名称。
+            </param>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String[])">
+            <summary>
+            指定调用了此方法后，所列出的字段和属性成员将不会为 null。
+            </summary>
+            <param name="members">
+            将保证不会为 null 的字段或属性名称列表。
+            </param>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.Members">
+            <summary>
+            调用了此方法后保证不会为 null 的字段或属性名称列表。
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
+            <summary>
+            当返回指定的 true/false 时，即可保证列表中所列出的字段和属性成员将不会为 null。
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String)">
+            <summary>
+            使用 true 或者 false 决定是否所列出的字段和属性成员将不会为 null。
+            </summary>
+            <param name="returnValue">
+            如果方法或属性的返回值等于这个值，那么所列出的字段和属性成员将不会为 null。
+            </param>
+            <param name="member">
+            将保证不会为 null 的字段或属性名称列表。
+            </param>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String[])">
+            <summary>
+            使用 true 或者 false 决定是否所列出的字段和属性成员将不会为 null。
+            </summary>
+            <param name="returnValue">
+            如果方法或属性的返回值等于这个值，那么所列出的字段和属性成员将不会为 null。
+            </param>
+            <param name="members">
+            将保证不会为 null 的字段或属性名称列表。
+            </param>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.ReturnValue">
+            <summary>
+            获取返回值决定是否不可为空的那个判断值。
+            </summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.Members">
+            <summary>
+            调用了此方法后保证不会为 null 的字段或属性名称列表。
+            </summary>
+        </member>
+    </members>
+</doc>
