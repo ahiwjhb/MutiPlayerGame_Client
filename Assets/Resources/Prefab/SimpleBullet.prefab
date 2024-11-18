@@ -73,7 +73,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 7
-  hitPower: 5
+  hitPower: 12
   lifeTime: 10
 --- !u!1 &5961398160190972168
 GameObject:

@@ -1,5 +1,7 @@
 #nullable enable
 using Core.AssetLoader;
+using Cysharp.Threading.Tasks;
+using MultiPlayerGame.Network;
 using MultiPlayerGame.UI.Chat;
 using MultiPlayerGame.UI.Room;
 using Network.Protocol;
@@ -17,10 +19,13 @@ namespace MultiPlayerGame
             return viewModel;
         }
 
-        public static ChatViewModel ToViewModel(this ChatInfo chatInfo) {
+        public static async UniTask<ChatViewModel> ToViewModel(this ChatInfo chatInfo) {
             var viewModel = new ChatViewModel();
-            viewModel.ChatterName.Value = chatInfo.SenderName;
+            var res = await Services.Instance.GetService<Client>().RequestUserInfoAsync(chatInfo.SenderID, timeout: 3f);
             viewModel.ChatText.Value = chatInfo.ChatContent;
+            if (res.IsSuccessful) {
+                viewModel.ChatterName.Value = res.Args.Unpack<UserInfo>().Name;
+            }
             return viewModel;
         }
 

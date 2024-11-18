@@ -31,6 +31,7 @@ namespace MultiPlayerGame.UI.RoomHall
             _searchRoomButton.GetComponentInChildren<TMP_Text>().text = "搜索房间";
             _createRoomButton.GetComponentInChildren<TMP_Text>().text = "创建房间";
 
+            Binder.BuildDataBind<bool>(v => v._createRoomButton.interactable).To(vm => vm.CreatRoomButtonEnable);
             Binder.BuildInvDataBind(vm => vm.InputRoomName).To(v => v._roomNameInputBox.text, v => v._roomNameInputBox.onEndEdit);
             Binder.BuildInvCommandBind(vm => vm.SearchRoom).To(v => v._searchRoomButton.onClick);
             Binder.BuildInvCommandBind(vm => vm.CreateRoom).To(v => v._createRoomButton.onClick);

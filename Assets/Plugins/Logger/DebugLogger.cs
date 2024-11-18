@@ -1,5 +1,6 @@
 #nullable enable
 #nullable enable
+using Network.Protocol;
 using System;
 using UnityEngine;
 
@@ -22,6 +23,7 @@ namespace Logger
         }
 
         void ILogger.LogFormat_Internal(string format, params object[] args) {
+            if (args.Length == 2 && args[1].ToString() == typeof(SyncPlayerPositionRequest).Name) return;
             Debug.LogFormat(format, args);
         }
 

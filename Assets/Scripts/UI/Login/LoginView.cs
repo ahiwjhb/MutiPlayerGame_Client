@@ -27,6 +27,7 @@ namespace MultiPlayerGame.UI.Login
             _loginButton.GetComponentInChildren<TMP_Text>().text = "登录";
             _switchToRegisterButton.GetComponentInChildren<TMP_Text>().text = "注册";
 
+            Binder.BuildDataBind<bool>(v => v. _loginButton.interactable).To(vm => vm.LoginButtonEnable);
             Binder.BuildInvDataBind(vm => vm.Username).To(v => v._usernameInputField.text, v => v._usernameInputField.onEndEdit).TwoWay();
             Binder.BuildInvDataBind(vm => vm.Password).To(v => v._passwordInputField.text, v => v._passwordInputField.onEndEdit).TwoWay();
             Binder.BuildInvCommandBind(vm => vm.SwitchToRegisterView).To(v => v._switchToRegisterButton.onClick);

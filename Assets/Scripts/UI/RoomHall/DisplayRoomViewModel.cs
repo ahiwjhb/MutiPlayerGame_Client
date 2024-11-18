@@ -1,6 +1,7 @@
 # nullable enable
 using Core.MVVM.UI;
 using Core.MVVM.Utility;
+using Network.Protocol;
 
 namespace MultiPlayerGame.UI.RoomHall
 { 
@@ -10,7 +11,7 @@ namespace MultiPlayerGame.UI.RoomHall
 
         public ObservableValue<string> WattingPeopelNumberText { get; } = new("0 / 0");
 
-        public ObservableValue<string> RoomState { get; } = new(string.Empty);
+        public ObservableValue<RoomState> RoomState { get; } = new(global::Network.Protocol.RoomState.Watting);
 
         public ObservableValue<int> MaxPeopelLimitInRoom { get; } = new();
 

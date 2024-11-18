@@ -20,13 +20,15 @@ namespace MultiPlayerGame.Game
 
         private Rigidbody2D rb = null!;
 
-        private int _remainningJumpCount = 1;
+        private int _remainningJumpCount = 2;
 
         private float _hasMovementBuffer;
 
         private bool _hasJumpBuffer;
 
         private bool _hasFireBuffer;
+
+        private bool _hasDownBuffer;
 
         private Client Client { get; set; }
 
@@ -41,13 +43,14 @@ namespace MultiPlayerGame.Game
         }
 
         private void FixedUpdate() {
+            var hit = Physics2D.OverlapBox((Vector2)transform.position + _groundDetectionOffset, _groundDetectionOffset, angle: 0);
+            if (hit != null && rb.velocity.y <= 0) {
+                _remainningJumpCount = 2;
+            }
             HandleMovement();
             HandleJump();
             HandleFire();
-            var hit = Physics2D.OverlapBox((Vector2)transform.position + _groundDetectionOffset, _groundDetectionOffset, angle: 0);
-            if (hit != null) {
-                _remainningJumpCount = 1;
-            }
+            HandleCrossPlatform();
 
             _syncPlayerPositionRequest.RequesterID = PlayerID;
             _syncPlayerPositionRequest.PlayerPosition.Set(transform.position);
@@ -59,15 +62,15 @@ namespace MultiPlayerGame.Game
             _hasMovementBuffer = Input.GetAxis("Horizontal");
             _hasJumpBuffer |= Input.GetKeyDown(KeyCode.K);
             _hasFireBuffer |= Input.GetKeyDown(KeyCode.J);
+            _hasDownBuffer |= Input.GetKeyDown(KeyCode.S);
         }
 
         private void HandleMovement() {
             if (_hasMovementBuffer == 0) return;
 
             if (_hasMovementBuffer != 0) {
-                Vector3 position = transform.position + Vector3.right * _hasMovementBuffer * MoveSpeed * Time.deltaTime;
                 transform.eulerAngles = new Vector3(0, _hasMovementBuffer >= 0 ? 0 : 180);
-                transform.position = position;
+                transform.position += Vector3.right * _hasMovementBuffer * MoveSpeed * Time.deltaTime; ;
             }
             _hasMovementBuffer = 0;
         }
@@ -93,6 +96,17 @@ namespace MultiPlayerGame.Game
             Client.SendMessageAsync(fireRequest);
 
             _hasFireBuffer = false;
+        }
+
+        private void HandleCrossPlatform() {
+            if (_hasDownBuffer == false) return;
+
+            var request = new CrossPlatformRequest() {
+                RequesterID = PlayerID
+            };
+            Client.SendMessageAsync(request);
+
+            _hasDownBuffer = false;
         }
 
         private void OnDrawGizmos() {

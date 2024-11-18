@@ -51,6 +51,7 @@ namespace MultiPlayerGame.UI.Room
             Client.AddMessageListener<StartGameRequest>(StartGame);
             Client.AddMessageListener<JoinRoomRequest>(HandleOtherPlayerJoinRoom);
             Client.AddMessageListener<ExitRoomRequest>(HandelOtherPlayerExitRoom);
+            Client.AddMessageListener<ChatInfo>(HandleSendChat);
         }
 
         public override void OnStartColse(IView view) {
@@ -58,10 +59,18 @@ namespace MultiPlayerGame.UI.Room
             Client.RemoveMessageListener<StartGameRequest>(StartGame);
             Client.RemoveMessageListener<JoinRoomRequest>(HandleOtherPlayerJoinRoom);
             Client.RemoveMessageListener<ExitRoomRequest>(HandelOtherPlayerExitRoom);
+            Client.RemoveMessageListener<ChatInfo>(HandleSendChat);
         }
 
         public void SendChat() {
+            var sendChatRequest = new SendChatRequest() {
+                RequesterID = LocalPlayerID,
+                RoomID = RoomID,
+                ChatContent = InputChatText
+            };
 
+            Client.SendMessageAsync(sendChatRequest);
+            InputChatText.Value = string.Empty;
         }
 
         public void PrepareOrStartGame() {
@@ -117,6 +126,10 @@ namespace MultiPlayerGame.UI.Room
                     }
                 }
             }
+        }
+
+        private async void HandleSendChat(object _, ChatInfo chatInfo) {
+            ChatViewModels.Add(await chatInfo.ToViewModel());
         }
     }
 }

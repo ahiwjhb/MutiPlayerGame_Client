@@ -36,7 +36,7 @@ namespace MultiPlayerGame.UI.Room
 
             Binder.BuildDataBind<string>(v => v._PrepareOrStartGameButton.GetComponentInChildren<TMP_Text>().text).To(vm => vm.PrepareOrStartGameButtonText);
             Binder.BuildDataBind<bool>(v => v._sendChatButton.interactable).To(vm => vm.SendChatButtonEnable);
-            Binder.BuildInvDataBind<string>(vm => vm.InputChatText).To(v => v._chatInputBox.text, v => v._chatInputBox.onValueChanged);
+            Binder.BuildInvDataBind<string>(vm => vm.InputChatText).To(v => v._chatInputBox.text, v => v._chatInputBox.onValueChanged).TwoWay();
             Binder.BuildInvCommandBind(vm => vm.PrepareOrStartGame).To(v => v._PrepareOrStartGameButton.onClick);
             Binder.BuildInvCommandBind(vm => vm.SendChat).To(v => v._sendChatButton.onClick);
             Binder.BuildInvCommandBind(vm => vm.ExitRoom).To(v => v._exitRoomButton.onClick);

@@ -7,6 +7,8 @@ using MultiPlayerGame.UI.Room;
 using Network.Protocol;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Analytics;
 
 namespace MultiPlayerGame.UI.RoomHall
 {
@@ -21,6 +23,8 @@ namespace MultiPlayerGame.UI.RoomHall
 
         public ObservableValue<string> InputRoomName { get; } = new(string.Empty);
 
+        public ObservableValue<bool> CreatRoomButtonEnable { get; } = new(true);
+
         internal ObservableList<DisplayRoomViewModel> DisplayRoomViewModels { get; } = new(); 
 
         public RoomHallViewModel() {
@@ -30,15 +34,25 @@ namespace MultiPlayerGame.UI.RoomHall
         public override async void OnStartOpen(IView view) {
             base.OnStartOpen(view);
 
-            var result = await Client.RequestSearchRoomAsync("*", timeout: 3f);
-            if (result.IsSuccessful == false) {
-                WindowManager.OpenTipWindow(result.Information, AssetPath.Icon.OperationResult.Error);
-            }
-            else {
-                var roomList = result.Args.Unpack<RoomListPack>().RoomList;
-                DisplayRoomViewModels.Clear();
-                SyncRoomListToServer(roomList);
-            }
+            //var result = await Client.RequestSearchRoomAsync("*", timeout: 3f);
+            //if (result.IsSuccessful == false) {
+            //    WindowManager.OpenTipWindow(result.Information, AssetPath.Icon.OperationResult.Error);
+            //}
+            //else {
+            //    var roomList = result.Args.Unpack<RoomListPack>().RoomList;
+            //    DisplayRoomViewModels.Clear();
+            //    SyncRoomListToServer(roomList);
+            //}
+        }
+
+        public override void OnOpenFinished(IView view) {
+            base.OnOpenFinished(view);
+            Client.AddMessageListener<StartGameRequest>(UpdateRoomState);
+        }
+
+        public override void OnStartColse(IView view) {
+            base.OnStartColse(view);
+            Client.RemoveMessageListener<StartGameRequest>(UpdateRoomState);
         }
 
         public async void SearchRoom() {
@@ -64,6 +78,7 @@ namespace MultiPlayerGame.UI.RoomHall
         }
 
         public async void CreateRoom() {
+            CreatRoomButtonEnable.Value = false;
             if (string.IsNullOrEmpty(InputRoomName)) {
                 WindowManager.OpenTipWindow("房间名不能为空！", AssetPath.Icon.OperationResult.Warring);
             }
@@ -80,6 +95,7 @@ namespace MultiPlayerGame.UI.RoomHall
                     WindowManager.OpenTipWindow(result.Information, AssetPath.Icon.OperationResult.Successful);
                 }
             }
+            CreatRoomButtonEnable.Value = true;
         } 
 
         private void SyncRoomListToServer(IEnumerable<RoomDisplayInfo> roomList) {
@@ -108,7 +124,6 @@ namespace MultiPlayerGame.UI.RoomHall
             viewModel.RoomName.Value = info.RoomName;
             viewModel.CurrentPeopelNumberInRoom.Value = info.CurrentPeopleNumber;
             viewModel.MaxPeopelLimitInRoom.Value = info.MaxPeopleLimit;
-            viewModel.RoomState.Value = info.RoomState == RoomState.Starting ? "游戏中" : "筹备中";
             return viewModel;
         }
 
@@ -122,12 +137,19 @@ namespace MultiPlayerGame.UI.RoomHall
                 }
             }
             foreach (var chatInfo in info.ChatHistories) {
-                viewModel.ChatViewModels.Add(chatInfo.ToViewModel());
+                viewModel.ChatViewModels.Add(await chatInfo.ToViewModel());
             }
 
             var roomView = WindowManager.GetWindow<RoomView>();
             roomView.ViewModel = viewModel;
             WindowManager.OpenWindow(roomView);
+        }
+
+        private void UpdateRoomState(object _, StartGameRequest request) {
+            var viewModel = DisplayRoomViewModels.FirstOrDefault(vm => vm.RoomID == request.RoomID);
+            if(viewModel != null) {
+                viewModel.RoomState.Value = RoomState.Starting; 
+            }
         }
     }  
 }
